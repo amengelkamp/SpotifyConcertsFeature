@@ -1,1 +1,11 @@
 SpotifySnapshots/
+node_modules/
+
+# image assets
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
+*.tif
+*.tiff
