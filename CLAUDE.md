@@ -83,3 +83,150 @@ Row disappears silently. If matches exist just outside the user's current radius
 
 ### Post-show experience
 Completely absent from MVP. No "you just saw X — here's what they played" setlist replay, no moment to deepen fandom while it's fresh. Potential V2 feature.
+
+---
+
+## Prototype & Publication Decisions
+
+### Goal
+Publish on personal website as a full case study, matching the format of the YNAB Amazon Enrichment case study. Target location: `/thisisalicia/spotify.html`, linked from `work.html`.
+
+### Phone Frame
+The prototype is wrapped in a phone frame (iPhone-style bezel, status bar, home indicator) built into `index.html` itself — not applied via CSS on the case study page. This ensures it looks correct standalone, in an iframe, and in screenshots.
+
+### Animated Entry — Concerts Row
+The prototype starts without the concerts row visible. The row animates in after a short delay, simulating the moment it first appears for a real user. This is the highest-intent product moment (the notification prompt triggers here) and the most important thing to make tangible in the prototype.
+
+### Notification Flow
+Tapping "Ja, benachrichtigen" in the Spotify prompt triggers a simulated iOS system permission sheet (bottom-anchored modal, Apple system font style, "Allow / Don't Allow" buttons, blurred backdrop). Two-step flow: Spotify earns intent, OS grants permission.
+
+### Screen Transitions
+All navigation uses CSS slide transitions (translateX, ~280ms ease-out): forward = slide in from right, back = slide out to right. No instant show/hide.
+
+### Radius Filtering — Real, Not Cosmetic
+Each concert row has a hardcoded distance value. The radius dropdown filters rows live. Distances are assigned so:
+- 50 km = 0 results (triggers empty state)
+- 100 km = a few results
+- 150 km = full list (default)
+Changing the radius also shows/hides the "Einzige Europa-Show" exception row, demonstrating the exception rule interactively.
+
+### Empty State
+When radius is set to 50 km and all concerts are filtered out:
+- The concerts row on the home screen collapses/disappears
+- A nudge appears: *"Keine Konzerte in deiner Nähe — Umkreis erweitern?"*
+- Increasing the radius restores the row
+
+### Festival Detail Page
+Rock am Ring gets its own detail page (not a redirect to an artist page). Layout: festival header image, festival name, top matching artists with set times, "X weitere acts", venue, date, ticket CTA. Demonstrates the distinct design pattern for festival cards.
+
+### Case Study Page Structure
+Follows the YNAB case study structure exactly:
+1. Problem
+2. Solution
+3. The Mockup (embedded iframe)
+4. Key Decisions (replaces "Screen by Screen" — no static screenshots needed, prototype is self-navigable)
+5. Technical Approach
+6. What I'd Measure
+7. What's Next
+
+Language: English case study page, German prototype (Spotify DE locale — noted in the intro as a deliberate localisation decision).
+
+---
+
+## Build Plan (Next Session)
+
+### Files to create / modify
+- `index.html` — full rebuild with all items below
+- `/thisisalicia/spotify.html` — new case study page
+- `/thisisalicia/work.html` — add Spotify entry alongside YNAB
+
+### Prototype changes (index.html)
+
+**Phone frame**
+Built into the HTML itself — 390×844px container, rounded corners (~55px), dynamic island, status bar (9:41, signal/wifi/battery icons), home indicator bar at bottom. Body gets a dark neutral background. All screens live inside the frame.
+
+**Screen architecture**
+Screens switch from `display:none/flex` (full-viewport) to `position:absolute; inset:0; overflow-y:auto` inside `.phone-content`. The `.bnav` is absolute-positioned at the bottom of the phone frame, shared across all screens. Remove per-screen `<div class="bnav">` duplication.
+
+**Slide transitions**
+Replace `go(id)` instant-switch with animated transitions:
+- Forward (deeper): new screen slides in from right (`translateX(100%→0)`), current screen slides out to left (`translateX(0→-30%)` subtle parallax)
+- Back: reverse — current slides to right, previous slides in from left
+- Duration: 280ms, `cubic-bezier(0.25, 0.46, 0.45, 0.94)`
+- Back buttons call `go(id, true)` — second param signals back direction
+
+**Animated concerts row entry**
+- Home screen loads with concerts section hidden (`opacity:0; transform:translateY(16px)`)
+- After 1500ms delay → concerts section animates to visible (400ms ease-out)
+- After 2200ms → notification prompt fades in
+
+**Notification → iOS permission sheet**
+- "Ja, benachrichtigen" dismisses Spotify prompt AND shows iOS sheet overlay
+- iOS sheet: centered alert, light-mode (white bg, dark text), system font (`-apple-system`), Spotify green app icon, German copy: *"Spotify" möchte dir Mitteilungen senden*, two buttons: "Nicht erlauben" / "Erlauben" (bold)
+- Either button dismisses the sheet
+
+**Radius filtering — real data**
+Add `data-distance` attribute to every `.c-row` and home-screen `.c-card`. Exception rows get `data-exception="true"`.
+
+Concert distances (user location: ~Düsseldorf/Ruhr area):
+| Concert | Venue | Distance | Exception |
+|---|---|---|---|
+| Remi Wolf | Palladium, Köln | 75 km | no |
+| Florence + The Machine | Lanxess Arena, Köln | 75 km | no (sold out) |
+| Lorde | Lanxess Arena, Köln | 75 km | no |
+| Rock am Ring | Nürburgring | 95 km | no (festival) |
+| Mumford & Sons | Westfalenhalle, Dortmund | 125 km | no |
+| Phoebe Bridgers | Tempodrom, Berlin | 570 km | **yes** (top 5 + ≤3 EU dates, shows at radius ≥150) |
+| The National | Jahrhunderthalle, Frankfurt | 185 km | no (sold out) |
+| Lana Del Rey | SAP Arena, Mannheim | 240 km | no |
+| Maggie Rogers | Kulturpalast, Dresden | 320 km | no |
+
+Radius → visible count:
+- 50 km → 0 → empty state
+- 100 km → 4 (Remi, Florence, Lorde, Rock am Ring)
+- 150 km → 6 (+ Mumford, + Phoebe exception)
+- 200 km → 7 (+ The National)
+- 300 km → 9 (+ Lana, + Maggie)
+
+`updateRadius(val)` filters `.c-row[data-distance]` and home-screen `.c-card[data-distance]`.
+Exception items (`data-exception="true"`) only show when `val >= 150`.
+When 0 results → show `#empty-state` nudge, hide `#concerts-section` on home.
+
+**Empty state**
+`#concerts-section` on home: hides + shows `#empty-state` nudge: *"Keine Konzerte in deiner Nähe — Umkreis erweitern?"* with a button that opens the concerts page to the radius dropdown.
+
+**Festival detail page (new screen `s-detail-rar`)**
+- Hero: Rock am Ring photo
+- Title: "Rock am Ring", type tag: "Festival"
+- Info grid: dates (7.–9. Aug 2026), venue (Nürburgring · 95 km)
+- Matching artists block: Remi Wolf + Mumford & Sons (with photos) + "14 weitere Acts"
+- Map placeholder
+- Price + "Tickets kaufen" CTA
+- Rock am Ring card on home AND row on concerts page both navigate here
+
+### Case study page (/thisisalicia/spotify.html)
+Structure (same as ynab.html):
+1. **Hook** — hero title: "Your most-played artists are touring. Spotify doesn't tell you."
+2. **Problem** — the manual-check pain, Spotify concert tab exists but isn't personalized
+3. **Solution** — 3 design principles: listening signal as filter, radius as default not gate, earning the notification opt-in
+4. **The Mockup** — iframe embed of `../spotifyConcertsFeature/index.html`
+5. **Key Decisions** — 5 numbered decisions with title + rationale (replaces screen-by-screen):
+   - 12 months not all-time
+   - Row not tab
+   - Notification prompt placement
+   - The Europa-Show exception rule
+   - Festival card as single entry
+6. **Technical Approach** — Spotify Web API + Ticketmaster/Bandsintown API, 2024 API access restrictions noted
+7. **What I'd Measure** — 4 metrics
+8. **What's Next** — post-show experience, setlist replay
+
+### work.html addition
+New `.work-project-card` entry for Spotify, same markup pattern as YNAB entry. Needs a screenshot — generate with Playwright after prototype is built.
+
+### Screenshots (Playwright)
+After prototype rebuild, use Playwright to capture:
+- Home screen (with concerts row visible)
+- Concerts list page
+- Festival detail page
+- Remi Wolf detail page
+Use as: `gallery/spotify-screenshot.png` for work.html card, optionally more for case study.
