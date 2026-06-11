@@ -243,8 +243,34 @@
       opacity: 0;
       transform: translateY(14px);
       transition: opacity .5s ease-out, transform .5s ease-out;
+      position: relative;
     }
     #concerts-section.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── SCROLL HINT ── */
+    #scroll-hint {
+      position: absolute;
+      right: 10px;
+      top: 82px;
+      background: rgba(18,18,18,0.72);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 6px 11px 6px 9px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.85);
+      letter-spacing: 0.02em;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+      z-index: 6;
+    }
+    #scroll-hint.show { opacity: 1; }
 
     /* ── NOTIFICATION PROMPT ── */
     #np {
@@ -563,6 +589,14 @@
             <div class="c-card-img" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Mumford_%26_Sons%2C_performing_at_Aviemore%2C_Scotland_2015.jpg/250px-Mumford_%26_Sons%2C_performing_at_Aviemore%2C_Scotland_2015.jpg');background-color:#2a1a0a;"></div>
             <div class="c-card-body"><div class="c-card-artist">Mumford &amp; Sons</div><div class="c-card-venue">Westfalenhalle, Dortmund</div><div class="c-card-date">Jul 5, 2026</div></div>
           </div>
+        </div>
+
+        <!-- Scroll hint -->
+        <div id="scroll-hint">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+          swipe for more
         </div>
 
         <!-- Notification prompt -->
@@ -892,6 +926,11 @@
   document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       document.getElementById('concerts-section').classList.add('visible');
+      setTimeout(() => {
+        const hint = document.getElementById('scroll-hint');
+        hint.classList.add('show');
+        setTimeout(() => hint.classList.remove('show'), 2200);
+      }, 400);
       setTimeout(() => {
         document.getElementById('np').classList.add('visible');
       }, 700);
