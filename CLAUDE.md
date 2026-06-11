@@ -1,5 +1,17 @@
 # Spotify Concerts Feature
 
+## Build Status (as of 2026-06-11)
+
+**Prototype**: Complete. `index.html` — English, phone frame (390×844px), 5 screens (home, concerts list, Remi Wolf detail, Phoebe Bridgers detail, Rock am Ring festival detail), slide transitions, animated concerts row, iOS permission sheet, real radius filtering (50/100/150/200/300 km), sold-out toggle, empty state with nudge.
+
+**Case study**: `/home/alicia/thisisalicia/spotify.html` — published to portfolio. Embedded iframe of prototype. Added as first card on `work.html`.
+
+**Tests**: 20/20 Playwright tests passing (`tests/mockup.spec.js`).
+
+**Screenshot**: `/home/alicia/thisisalicia/gallery/spotify-screenshot.png` — concerts list screen, used on work.html card.
+
+---
+
 ## Context & Core Problem
 
 Spotify treats concerts as a monetization add-on rather than a natural extension of the listening relationship. The data to make it feel personal is all there — it's mostly a product prioritization gap. The core user pain: having to manually check each artist page to see if they're touring nearby.

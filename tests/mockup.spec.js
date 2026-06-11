@@ -18,10 +18,10 @@ test('phone frame renders with status bar', async ({ page }) => {
 
 // ── Home screen ──────────────────────────────────────────────
 test('home screen shows correct tabs', async ({ page }) => {
-  await expect(page.getByRole('button', { name: 'Alle' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Musik' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Podcasts' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Hörbücher' })).toBeVisible();
+  await expect(page.locator('#s-home .tab', { hasText: 'All' })).toBeVisible();
+  await expect(page.locator('#s-home .tab', { hasText: 'Music' })).toBeVisible();
+  await expect(page.locator('#s-home .tab', { hasText: 'Podcasts' })).toBeVisible();
+  await expect(page.locator('#s-home .tab', { hasText: 'Audiobooks' })).toBeVisible();
 });
 
 test('concerts row animates in after delay', async ({ page }) => {
@@ -49,13 +49,13 @@ test('Europa-Show badge visible on Phoebe Bridgers card', async ({ page }) => {
 // ── Notification flow ────────────────────────────────────────
 test('notification prompt dismisses on Nein danke', async ({ page }) => {
   await page.waitForTimeout(2500);
-  await page.getByRole('button', { name: 'Nein danke' }).click();
+  await page.getByRole('button', { name: 'No thanks' }).click();
   await expect(page.locator('#np')).not.toHaveClass(/visible/);
 });
 
 test('Ja benachrichtigen triggers iOS permission sheet', async ({ page }) => {
   await page.waitForTimeout(2500);
-  await page.getByRole('button', { name: 'Ja, benachrichtigen' }).click();
+  await page.getByRole('button', { name: 'Yes, notify me' }).click();
   await page.waitForTimeout(300);
   await expect(page.locator('.ios-overlay')).toHaveClass(/show/);
   await expect(page.locator('.ios-alert-title')).toBeVisible();
@@ -63,7 +63,7 @@ test('Ja benachrichtigen triggers iOS permission sheet', async ({ page }) => {
 
 test('iOS sheet dismisses on Erlauben', async ({ page }) => {
   await page.waitForTimeout(2500);
-  await page.getByRole('button', { name: 'Ja, benachrichtigen' }).click();
+  await page.getByRole('button', { name: 'Yes, notify me' }).click();
   await page.waitForTimeout(400);
   await page.locator('.ios-alert-btn.ios-allow').click();
   await expect(page.locator('.ios-overlay')).not.toHaveClass(/show/);
@@ -74,7 +74,7 @@ test('clicking Alle anzeigen opens concerts list', async ({ page }) => {
   await page.locator('#s-home a.sec-link[onclick]').click();
   await page.waitForTimeout(350);
   await expect(page.locator('#s-concerts')).toHaveCSS('transform', 'matrix(1, 0, 0, 1, 0, 0)');
-  await expect(page.locator('#s-concerts').getByText('Diese Woche')).toBeVisible();
+  await expect(page.locator('#s-concerts').getByText('This Week')).toBeVisible();
 });
 
 test('concerts list back button returns to home', async ({ page }) => {
@@ -113,7 +113,7 @@ test('Phoebe Bridgers detail shows Europa notice', async ({ page }) => {
   await page.locator('#s-concerts .concert-item[data-exception="true"]').click();
   await page.waitForTimeout(350);
   await expect(page.locator('#s-detail-phoebe')).toHaveCSS('transform', 'matrix(1, 0, 0, 1, 0, 0)');
-  await expect(page.locator('#s-detail-phoebe').getByText(/einzigen Termin in Europa/)).toBeVisible();
+  await expect(page.locator('#s-detail-phoebe').getByText(/one European date/)).toBeVisible();
 });
 
 // ── Radius filtering ──────────────────────────────────────────
@@ -122,14 +122,14 @@ test('radius 50km hides all concerts and shows empty state', async ({ page }) =>
   await page.waitForTimeout(350);
   await page.selectOption('#radius-select', '50');
   await expect(page.locator('#concerts-empty')).toBeVisible();
-  await expect(page.locator('#filter-meta')).toContainText('0 Konzerte');
+  await expect(page.locator('#filter-meta')).toContainText('0 concerts');
 });
 
 test('radius 300km shows maximum concerts', async ({ page }) => {
   await page.locator('#s-home a.sec-link[onclick]').click();
   await page.waitForTimeout(350);
   await page.selectOption('#radius-select', '300');
-  await expect(page.locator('#filter-meta')).toContainText('8 Konzerte'); // Maggie Rogers at 320km excluded
+  await expect(page.locator('#filter-meta')).toContainText('8 concerts'); // Maggie Rogers at 320km excluded
 });
 
 test('Phoebe exception row hidden at 100km', async ({ page }) => {
