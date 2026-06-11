@@ -2,107 +2,184 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Spotify — Konzerte Feature Mockup</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    :root {
-      --bg:           #121212;
-      --surface:      #181818;
-      --surface2:     #282828;
-      --green:        #1DB954;
-      --green-hover:  #1ed760;
-      --white:        #FFFFFF;
-      --muted:        #B3B3B3;
-      --subdued:      #6A6A6A;
-      --dimmed:       #535353;
+    /* ── OUTER ── */
+    body {
+      background: #0d0d0d;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 32px 16px 60px;
+      font-family: "CircularSp","CircularSpWeb","Helvetica Neue",Helvetica,Arial,sans-serif;
     }
 
-    body {
+    .phone-wrap { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+
+    /* ── PHONE FRAME ── */
+    .phone {
+      width: 390px;
+      height: 844px;
+      border-radius: 54px;
+      background: #121212;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow:
+        0 0 0 1px #3a3a3a,
+        0 0 0 3px #111,
+        0 0 0 4px #3a3a3a,
+        0 30px 80px rgba(0,0,0,.9),
+        0 0 120px rgba(29,185,84,.06);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── DYNAMIC ISLAND ── */
+    .dynamic-island {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 126px;
+      height: 36px;
+      background: #000;
+      border-radius: 20px;
+      z-index: 500;
+    }
+
+    /* ── STATUS BAR ── */
+    .status-bar {
+      height: 52px;
+      padding: 14px 28px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 200;
+      background: #121212;
+    }
+    .sb-time { font-size: 15px; font-weight: 600; color: #fff; letter-spacing: -.3px; }
+    .sb-icons { display: flex; align-items: center; gap: 6px; }
+
+    /* ── PHONE CONTENT ── */
+    .phone-content {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ── SCREENS ── */
+    :root {
+      --bg:        #121212;
+      --surface:   #181818;
+      --surface2:  #282828;
+      --green:     #1DB954;
+      --green-hov: #1ed760;
+      --white:     #FFFFFF;
+      --muted:     #B3B3B3;
+      --subdued:   #6A6A6A;
+      --dimmed:    #535353;
+    }
+    .screen {
+      position: absolute;
+      inset: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
       background: var(--bg);
       color: var(--white);
-      font-family: "CircularSp","CircularSpWeb","Helvetica Neue",Helvetica,Arial,sans-serif;
-      min-height: 100vh;
-      overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
+      transform: translateX(100%);
+      will-change: transform;
+    }
+    .screen.active { transform: translateX(0); }
+    .screen::-webkit-scrollbar { display: none; }
+
+    /* ── BOTTOM NAV (shared) ── */
+    .bnav {
+      display: flex;
+      border-top: 1px solid #222;
+      background: #121212;
+      padding: 10px 0 0;
+      flex-shrink: 0;
+      height: 72px;
+      position: relative;
+    }
+    .bnav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-size: 10px;
+      color: var(--muted);
+      cursor: pointer;
+    }
+    .bnav-item.on { color: var(--white); }
+    .bnav-indicator {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 134px;
+      height: 5px;
+      background: rgba(255,255,255,.28);
+      border-radius: 3px;
     }
 
-    /* ─── SCREENS ─── */
-    .screen { display: none; flex-direction: column; min-height: 100vh; }
-    .screen.active { display: flex; }
-
-    /* ─── TOPBAR ─── */
+    /* ── TOPBAR ── */
     .topbar {
       position: sticky; top: 0; z-index: 100;
       background: var(--bg);
       padding: 14px 16px 0;
     }
-
-    .topbar-row1 {
-      display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
-    }
-
+    .topbar-row1 { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
     .icon-btn {
       width: 32px; height: 32px; flex-shrink: 0;
       background: none; border: none; color: var(--white);
       cursor: pointer; display: flex; align-items: center; justify-content: center;
       border-radius: 50%;
     }
-    .icon-btn:hover { background: rgba(255,255,255,0.08); }
-
+    .icon-btn:hover { background: rgba(255,255,255,.08); }
     .search-pill {
       flex: 1; background: #2a2a2a; border-radius: 20px;
-      display: flex; align-items: center; gap: 8px;
-      padding: 7px 14px; cursor: text;
+      display: flex; align-items: center; gap: 8px; padding: 7px 14px;
     }
     .search-pill span { font-size: 13px; color: var(--subdued); }
-
-    .tabs {
-      display: flex; gap: 8px; padding-bottom: 10px;
-      overflow-x: auto; scrollbar-width: none;
-    }
+    .tabs { display: flex; gap: 8px; padding-bottom: 10px; overflow-x: auto; scrollbar-width: none; }
     .tabs::-webkit-scrollbar { display: none; }
-
     .tab {
       padding: 5px 13px; border-radius: 20px; border: none;
       font-size: 13px; font-weight: 700; font-family: inherit;
-      cursor: pointer; transition: background 0.15s; white-space: nowrap;
+      cursor: pointer; transition: background .15s; white-space: nowrap;
     }
     .tab.active  { background: var(--white); color: #000; }
     .tab.passive { background: #2a2a2a; color: var(--white); }
-    .tab.passive:hover { background: #3a3a3a; }
 
-    /* ─── CONTENT ─── */
-    .content { padding: 6px 16px 100px; }
+    /* ── CONTENT ── */
+    .content { padding: 6px 16px 24px; }
 
-    /* ─── SECTION ─── */
+    /* ── SECTION ── */
     .section { margin-bottom: 28px; }
-
-    .sec-hdr {
-      display: flex; align-items: flex-end;
-      justify-content: space-between; margin-bottom: 14px;
-    }
+    .sec-hdr { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 14px; }
     .sec-eyebrow { font-size: 11px; color: var(--muted); margin-bottom: 1px; }
     .sec-title   { font-size: 22px; font-weight: 700; letter-spacing: -.3px; }
-    .sec-link    {
-      font-size: 11px; font-weight: 700; color: var(--muted);
-      text-decoration: none; cursor: pointer;
-      letter-spacing: .08em; text-transform: uppercase;
-    }
-    .sec-link:hover { color: var(--white); text-decoration: underline; }
+    .sec-link    { font-size: 11px; font-weight: 700; color: var(--muted); text-decoration: none; cursor: pointer; letter-spacing: .08em; text-transform: uppercase; }
+    .sec-link:hover { color: var(--white); }
 
-    /* ─── QUICK GRID ─── */
+    /* ── QUICK GRID ── */
     .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-
     .q-item {
       background: #2a2a2a; border-radius: 4px;
-      display: flex; align-items: center;
-      overflow: hidden; cursor: pointer;
-      transition: background 0.15s; height: 52px;
+      display: flex; align-items: center; overflow: hidden; cursor: pointer;
+      transition: background .15s; height: 52px;
     }
     .q-item:hover { background: #3a3a3a; }
-
     .q-thumb {
       width: 52px; height: 52px; flex-shrink: 0;
       background-size: cover; background-position: center;
@@ -111,45 +188,32 @@
     }
     .q-item span { font-size: 13px; font-weight: 700; padding: 0 12px; line-height: 1.3; }
 
-    /* ─── SCROLL ROW ─── */
-    .row {
-      display: flex; gap: 12px; overflow-x: auto;
-      padding-bottom: 4px; scrollbar-width: none;
-    }
+    /* ── SCROLL ROW ── */
+    .row { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
     .row::-webkit-scrollbar { display: none; }
 
-    /* ─── STANDARD CARD (playlists / radio) ─── */
+    /* ── STANDARD CARD ── */
     .card {
       flex-shrink: 0; width: 148px; cursor: pointer;
       padding: 12px; border-radius: 6px;
       background: var(--surface); transition: background .15s;
     }
     .card:hover { background: var(--surface2); }
-
     .card-art-sq, .card-art-ci {
-      width: 124px; height: 124px;
-      margin-bottom: 10px;
+      width: 124px; height: 124px; margin-bottom: 10px;
       background-size: cover; background-position: center;
       display: flex; align-items: center; justify-content: center;
       font-size: 42px; overflow: hidden;
     }
     .card-art-sq { border-radius: 4px; }
     .card-art-ci { border-radius: 50%; }
-
     .card-name { font-size: 13px; font-weight: 700; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .card-sub  { font-size: 12px; color: var(--muted); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
-    /* radio card has RADIO badge */
-    .radio-badge {
-      position: absolute; top: 8px; left: 8px;
-      background: rgba(0,0,0,.5);
-      font-size: 9px; font-weight: 700; letter-spacing: .1em;
-      color: var(--white); padding: 3px 6px; border-radius: 2px;
-    }
+    .radio-badge { position: absolute; top: 8px; left: 8px; background: rgba(0,0,0,.5); font-size: 9px; font-weight: 700; letter-spacing: .1em; color: var(--white); padding: 3px 6px; border-radius: 2px; }
     .card-art-wrap { position: relative; width: 124px; height: 124px; margin-bottom: 10px; }
     .card-art-wrap .card-art-ci { width: 100%; height: 100%; margin-bottom: 0; }
 
-    /* ─── CONCERT CARD ─── */
+    /* ── CONCERT CARD ── */
     .c-card {
       flex-shrink: 0; width: 160px; cursor: pointer;
       border-radius: 6px; background: var(--surface);
@@ -157,52 +221,67 @@
     }
     .c-card:hover { background: var(--surface2); }
     .c-card.sold-out { opacity: .5; }
-
+    .c-card.festival { width: 180px; }
     .c-card-img {
       width: 160px; height: 160px;
       background-size: cover; background-position: center top;
-      display: flex; align-items: center; justify-content: center;
     }
-
-    /* festival card wider */
-    .c-card.festival       { width: 180px; }
     .c-card.festival .c-card-img { width: 180px; }
-
     .c-card-body { padding: 10px 12px 12px; }
     .c-card-artist { font-size: 13px; font-weight: 700; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .c-card-venue  { font-size: 12px; color: var(--muted); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .c-card-date   { font-size: 12px; color: var(--muted); }
     .c-card-extra  { font-size: 11px; color: var(--green); font-weight: 700; margin-top: 4px; }
 
-    .badge {
-      position: absolute; top: 8px; left: 8px;
-      padding: 3px 7px; border-radius: 10px;
-      font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
-    }
-    .badge-eu     { background: rgba(29,185,84,.9);  color: #000; }
-    .badge-so     { background: rgba(50,50,50,.95); color: #aaa; }
-    .badge-fest   { background: rgba(255,160,0,.9);  color: #000; }
+    .badge { position: absolute; top: 8px; left: 8px; padding: 3px 7px; border-radius: 10px; font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+    .badge-eu   { background: rgba(29,185,84,.9); color: #000; }
+    .badge-so   { background: rgba(50,50,50,.95); color: #aaa; }
+    .badge-fest { background: rgba(255,160,0,.9); color: #000; }
 
-    /* ─── NOTIFICATION PROMPT ─── */
-    .notif-prompt {
+    /* ── CONCERTS ROW ANIMATION ── */
+    #concerts-section {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity .5s ease-out, transform .5s ease-out;
+    }
+    #concerts-section.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── NOTIFICATION PROMPT ── */
+    #np {
       background: #1c1c1c; border: 1px solid #2a2a2a;
       border-radius: 8px; padding: 14px 16px;
       margin-top: 14px; display: flex; align-items: flex-start; gap: 14px;
+      opacity: 0; transform: translateY(8px);
+      transition: opacity .4s ease-out, transform .4s ease-out;
+      pointer-events: none;
     }
+    #np.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
     .notif-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
     .notif-body p { font-size: 13px; line-height: 1.55; color: var(--muted); }
     .notif-body p strong { color: var(--white); }
     .notif-actions { display: flex; gap: 8px; margin-top: 10px; }
-
     .btn { padding: 7px 18px; border-radius: 20px; border: none; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; transition: all .15s; }
-    .btn-white { background: var(--white); color: #000; }
+    .btn-white   { background: var(--white); color: #000; }
     .btn-white:hover { background: #e8e8e8; }
     .btn-outline { background: transparent; color: var(--muted); border: 1px solid #555; }
     .btn-outline:hover { color: var(--white); border-color: #aaa; }
-    .btn-green { background: var(--green); color: #000; }
-    .btn-green:hover { background: var(--green-hover); transform: scale(1.02); }
+    .btn-green   { background: var(--green); color: #000; }
+    .btn-green:hover { background: var(--green-hov); }
 
-    /* ─── PAGE HEADER (detail / list screens) ─── */
+    /* ── EMPTY STATE NUDGE ── */
+    #empty-nudge {
+      display: none;
+      background: #1c1c1c; border: 1px solid #2a2a2a;
+      border-radius: 8px; padding: 16px;
+      margin-bottom: 28px;
+      opacity: 0; transform: translateY(8px);
+      transition: opacity .4s ease-out, transform .4s ease-out;
+    }
+    #empty-nudge.visible { opacity: 1; transform: translateY(0); }
+    #empty-nudge p { font-size: 13px; color: var(--muted); line-height: 1.55; margin-bottom: 10px; }
+    #empty-nudge p strong { color: var(--white); }
+
+    /* ── PAGE HEADER ── */
     .pg-hdr {
       position: sticky; top: 0; z-index: 100; background: var(--bg);
       display: flex; align-items: center; gap: 14px;
@@ -217,18 +296,15 @@
     .back-btn:hover { background: rgba(255,255,255,.15); }
     .pg-title { font-size: 22px; font-weight: 700; letter-spacing: -.3px; }
 
-    /* ─── CONCERTS LIST SCREEN ─── */
+    /* ── FILTER ROW ── */
     .filter-row {
       display: flex; align-items: center; gap: 10px;
-      padding: 0 16px 12px;
-      border-bottom: 1px solid #1e1e1e;
+      padding: 0 16px 12px; border-bottom: 1px solid #1e1e1e;
     }
     .filter-meta { font-size: 12px; color: var(--muted); flex: 1; }
-
     .radius-select {
       appearance: none; -webkit-appearance: none;
-      background: #2a2a2a;
-      border: none; border-radius: 14px;
+      background: #2a2a2a; border: none; border-radius: 14px;
       color: var(--white); font-family: inherit;
       font-size: 12px; font-weight: 700;
       padding: 5px 24px 5px 10px; cursor: pointer;
@@ -237,7 +313,6 @@
     }
     .radius-select:focus { outline: none; }
     .radius-select option { background: #282828; }
-
     .toggle-wrap { display: flex; align-items: center; gap: 7px; }
     .toggle-lbl  { font-size: 12px; color: var(--muted); white-space: nowrap; }
     .toggle {
@@ -253,26 +328,21 @@
     }
     .toggle.on::after { left: 20px; }
 
-    /* ─── TIME GROUPS ─── */
-    .tg { margin-top: 20px; margin-bottom: 8px; }
-    .tg-label {
-      font-size: 11px; font-weight: 700; color: var(--muted);
-      text-transform: uppercase; letter-spacing: .1em;
-      padding: 0 16px; margin-bottom: 4px;
-    }
+    /* ── TIME GROUPS ── */
+    .tg { margin-top: 20px; margin-bottom: 4px; }
+    .tg-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; padding: 0 16px; margin-bottom: 4px; }
+    .divider { height: 1px; background: #1e1e1e; margin: 4px 16px 0; }
 
+    /* ── CONCERT ROW ── */
     .c-row {
       display: flex; align-items: center; gap: 12px;
       padding: 8px 16px; cursor: pointer; transition: background .1s;
     }
     .c-row:hover { background: #1e1e1e; }
     .c-row.sold-out { opacity: .45; }
-
     .c-row-img {
       width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0;
       background-size: cover; background-position: center;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px;
     }
     .c-row-info { flex: 1; min-width: 0; }
     .c-row-artist { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -283,19 +353,20 @@
     .c-row-date   { font-size: 12px; font-weight: 700; }
     .c-row-price  { font-size: 11px; color: var(--muted); margin-top: 2px; }
 
-    .divider { height: 1px; background: #1e1e1e; margin: 0 16px; }
+    /* concerts list empty state */
+    #concerts-empty {
+      display: none; padding: 40px 16px; text-align: center;
+    }
+    #concerts-empty p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+    #concerts-empty strong { color: var(--white); display: block; margin-bottom: 6px; font-size: 16px; }
 
-    /* ─── DETAIL ─── */
+    /* ── DETAIL ── */
     .hero {
       height: 260px; position: relative; overflow: hidden; flex-shrink: 0;
       background-size: cover; background-position: center top;
       display: flex; align-items: center; justify-content: center;
-      font-size: 80px;
     }
-    .hero-overlay {
-      position: absolute; inset: 0;
-      background: linear-gradient(to bottom, rgba(0,0,0,.1) 0%, var(--bg) 100%);
-    }
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,.1) 0%, var(--bg) 100%); }
     .hero-back {
       position: absolute; top: 14px; left: 14px;
       background: rgba(0,0,0,.55); border: none; color: var(--white);
@@ -304,310 +375,432 @@
       display: flex; align-items: center; justify-content: center;
     }
     .hero-back:hover { background: rgba(0,0,0,.8); }
-
-    .detail-body { padding: 4px 16px 100px; overflow-y: auto; flex: 1; }
-
+    .detail-body { padding: 4px 16px 24px; }
     .d-artist { font-size: 28px; font-weight: 700; letter-spacing: -.5px; margin-bottom: 3px; }
     .d-type   { font-size: 12px; color: var(--green); font-weight: 700; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
     .d-type .eu-badge { background: rgba(29,185,84,.15); border: 1px solid rgba(29,185,84,.35); border-radius: 10px; padding: 2px 9px; font-size: 10px; }
-
     .d-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
     .d-cell .d-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .09em; margin-bottom: 3px; }
     .d-cell .d-val { font-size: 14px; font-weight: 700; }
     .d-cell .d-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
-
     .support-block { background: var(--surface); border-radius: 6px; padding: 14px; margin-bottom: 18px; }
     .support-lbl   { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .09em; margin-bottom: 10px; }
     .support-act   { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
     .support-act:last-child { margin-bottom: 0; }
-    .s-ava { width: 34px; height: 34px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; background-size: cover; background-position: center; }
+    .s-ava  { width: 34px; height: 34px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; background-size: cover; background-position: center; }
     .s-name { font-size: 13px; font-weight: 700; }
     .s-role { font-size: 11px; color: var(--muted); }
-
     .eu-notice { background: rgba(29,185,84,.07); border: 1px solid rgba(29,185,84,.18); border-radius: 6px; padding: 11px 13px; font-size: 12px; color: var(--muted); line-height: 1.55; margin-bottom: 18px; }
-
     .map-block { background: #1b281b; border: 1px solid #253525; border-radius: 6px; height: 120px; margin-bottom: 18px; display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--muted); font-size: 13px; }
-
     .price-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
     .price-lbl { font-size: 13px; color: var(--muted); }
     .price-val { font-size: 20px; font-weight: 700; }
-
     .cta { width: 100%; padding: 15px; background: var(--green); color: #000; border: none; border-radius: 30px; font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer; letter-spacing: .02em; transition: background .15s, transform .1s; }
-    .cta:hover { background: var(--green-hover); transform: scale(1.01); }
+    .cta:hover { background: var(--green-hov); transform: scale(1.01); }
 
-    /* ─── BOTTOM NAV ─── */
-    .bnav { position: fixed; bottom: 0; left: 0; right: 0; background: #121212; border-top: 1px solid #222; display: flex; padding: 10px 0 22px; z-index: 200; }
-    .bnav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10px; color: var(--muted); cursor: pointer; }
-    .bnav-item.on { color: var(--white); }
+    /* ── FESTIVAL DETAIL EXTRAS ── */
+    .fest-artists { background: var(--surface); border-radius: 6px; padding: 14px; margin-bottom: 18px; }
+    .fest-artists-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .09em; margin-bottom: 10px; }
+    .fest-artist-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .fest-artist-row:last-of-type { margin-bottom: 0; }
+    .fest-more { font-size: 12px; color: var(--green); font-weight: 700; margin-top: 10px; padding-top: 10px; border-top: 1px solid #2a2a2a; }
 
-    /* ─── PROTO BADGE ─── */
-    .proto-badge { position: fixed; top: 8px; right: 10px; background: rgba(29,185,84,.1); border: 1px solid rgba(29,185,84,.25); color: var(--green); font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 10px; letter-spacing: .07em; z-index: 999; }
+    /* ── IOS OVERLAY ── */
+    .ios-overlay {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 2000;
+      opacity: 0; pointer-events: none;
+      transition: opacity .22s;
+    }
+    .ios-overlay.show { opacity: 1; pointer-events: auto; }
+    .ios-alert {
+      background: rgba(242,242,247,.97);
+      border-radius: 14px; width: 270px; overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+    }
+    .ios-alert-header { padding: 20px 16px 14px; text-align: center; }
+    .ios-alert-icon {
+      width: 56px; height: 56px; background: #1DB954;
+      border-radius: 14px; margin: 0 auto 12px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ios-alert-title { font-size: 17px; font-weight: 600; color: #000; line-height: 1.3; margin-bottom: 6px; }
+    .ios-alert-body  { font-size: 13px; color: #3c3c43; line-height: 1.45; }
+    .ios-alert-btn {
+      display: block; width: 100%; padding: 13px;
+      background: none; border: none; border-top: 0.5px solid rgba(60,60,67,.36);
+      font-size: 17px; color: #007AFF; cursor: pointer;
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      text-align: center;
+    }
+    .ios-alert-btn:active { background: rgba(0,0,0,.07); }
+    .ios-alert-btn.ios-allow { font-weight: 600; }
   </style>
 </head>
 <body>
 
-<div class="proto-badge">MOCKUP</div>
+<div class="phone-wrap">
+<div class="phone">
 
-<!-- ══════════════════════════════════════
-     SCREEN 1 · HOME
-══════════════════════════════════════ -->
-<div class="screen active" id="s-home">
+  <!-- Dynamic island -->
+  <div class="dynamic-island"></div>
 
-  <div class="topbar">
-    <div class="topbar-row1">
-      <button class="icon-btn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-      </button>
-      <div class="search-pill">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6a6a6a" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <span>Was möchtest du wiedergeben?</span>
-      </div>
-      <button class="icon-btn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      </button>
-    </div>
-    <div class="tabs">
-      <button class="tab active">Alle</button>
-      <button class="tab passive">Musik</button>
-      <button class="tab passive">Podcasts</button>
-      <button class="tab passive">Hörbücher</button>
+  <!-- Status bar -->
+  <div class="status-bar">
+    <span class="sb-time">9:41</span>
+    <div class="sb-icons">
+      <!-- Signal -->
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="white">
+        <rect x="0"  y="7" width="3" height="5" rx=".5"/>
+        <rect x="4.5" y="4.5" width="3" height="7.5" rx=".5"/>
+        <rect x="9" y="2" width="3" height="10" rx=".5"/>
+        <rect x="13.5" y="0" width="3" height="12" rx=".5"/>
+      </svg>
+      <!-- WiFi -->
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="white">
+        <path d="M8 9.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"/>
+        <path d="M3.4 6.6a6.4 6.4 0 019.2 0" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M1 4.2A9.8 9.8 0 0115 4.2" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      </svg>
+      <!-- Battery -->
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none">
+        <rect x=".5" y=".5" width="21" height="11" rx="3.5" stroke="white" stroke-opacity=".35"/>
+        <rect x="2" y="2" width="17" height="8" rx="2" fill="white"/>
+        <path d="M23 4v4a2 2 0 000-4z" fill="white" fill-opacity=".4"/>
+      </svg>
     </div>
   </div>
 
-  <div class="content">
+  <!-- ══ SCREENS ══ -->
+  <div class="phone-content">
 
-    <!-- Quick access grid -->
-    <div class="section" style="margin-bottom:20px;">
-      <div class="quick-grid">
-        <div class="q-item">
-          <div class="q-thumb" style="background:#5236a5;">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+  <!-- ═══════════════════════════════
+       SCREEN 1 · HOME
+  ═══════════════════════════════ -->
+  <div class="screen active" id="s-home">
+    <div class="topbar">
+      <div class="topbar-row1">
+        <button class="icon-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        </button>
+        <div class="search-pill">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6a6a6a" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span>Was möchtest du wiedergeben?</span>
+        </div>
+        <button class="icon-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        </button>
+      </div>
+      <div class="tabs">
+        <button class="tab active">Alle</button>
+        <button class="tab passive">Musik</button>
+        <button class="tab passive">Podcasts</button>
+        <button class="tab passive">Hörbücher</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <!-- Quick grid -->
+      <div class="section" style="margin-bottom:20px;">
+        <div class="quick-grid">
+          <div class="q-item"><div class="q-thumb" style="background:#5236a5;"><svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></div><span>Lieblingssongs</span></div>
+          <div class="q-item"><div class="q-thumb" style="background:#1a2a3a;">🎵</div><span>The Beaches Radio</span></div>
+          <div class="q-item"><div class="q-thumb" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Remi_Wolf_in_2024.png/120px-Remi_Wolf_in_2024.png');background-color:#1a3a1a;"></div><span>Remi Wolf</span></div>
+          <div class="q-item"><div class="q-thumb" style="background:#2a1a3a;">🎵</div><span>Off Campus Playlist</span></div>
+          <div class="q-item"><div class="q-thumb" style="background:#8B4513;font-size:14px;font-weight:700;color:white;">348</div><span>#348 ALLE ZIEHN'S...</span></div>
+          <div class="q-item"><div class="q-thumb" style="background:#1a1a2a;">🎤</div><span>Shindy</span></div>
+        </div>
+      </div>
+
+      <!-- Für Alicia -->
+      <div class="section">
+        <div class="sec-hdr">
+          <div><div class="sec-eyebrow">Für</div><div class="sec-title">Alicia</div></div>
+          <a class="sec-link">Alle anzeigen</a>
+        </div>
+        <div class="row">
+          <div class="card"><div class="card-art-sq" style="background:linear-gradient(135deg,#E91429 0%,#8B2FC9 100%);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;"><div style="font-size:11px;font-weight:900;color:white;letter-spacing:.05em;">DEIN MIX</div><div style="font-size:11px;font-weight:900;color:white;letter-spacing:.05em;">DER WOCHE</div></div><div class="card-name">Dein Mix der Woche</div><div class="card-sub">Kontra K, Shindy, Bushido und mehr</div></div>
+          <div class="card"><div class="card-art-sq" style="background:linear-gradient(135deg,#00A0D6,#2D46B9);display:flex;align-items:flex-end;padding:8px;"><div style="background:#00cfff;color:#000;font-size:10px;font-weight:900;padding:3px 7px;border-radius:2px;">Dein Mixtape 1</div></div><div class="card-name">Dein Mixtape 1</div><div class="card-sub">capelli, Fabian Römer, OK KID und mehr</div></div>
+          <div class="card"><div class="card-art-sq" style="background:linear-gradient(135deg,#E91429,#FF6B00);display:flex;align-items:flex-end;padding:8px;"><div style="background:#FF6B00;color:#000;font-size:10px;font-weight:900;padding:3px 7px;border-radius:2px;">Dein Mixtape 2</div></div><div class="card-name">Dein Mixtape 2</div><div class="card-sub">Taylor Swift, Lorde, Lana Del Rey und mehr</div></div>
+        </div>
+      </div>
+
+      <!-- ✦ KONZERTE ✦ -->
+      <div id="concerts-section" class="section">
+        <div class="sec-hdr">
+          <div>
+            <div class="sec-title">Konzerte in deiner Nähe</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px;" id="home-radius-sub">Basierend auf deinen meistgehörten Künstlern · 150 km</div>
           </div>
-          <span>Lieblingssongs</span>
+          <a class="sec-link" onclick="go('s-concerts')">Alle anzeigen</a>
         </div>
-        <div class="q-item">
-          <div class="q-thumb" style="background-color:#1a2a3a;">🎵</div>
-          <span>The Beaches Radio</span>
+
+        <div class="row" id="home-concert-row">
+          <div class="c-card home-concert-card" data-distance="75" onclick="go('s-detail-remi')">
+            <div class="c-card-img" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Remi_Wolf_in_2024.png/250px-Remi_Wolf_in_2024.png');background-color:#1a3a1a;"></div>
+            <div class="c-card-body"><div class="c-card-artist">Remi Wolf</div><div class="c-card-venue">Palladium, Köln</div><div class="c-card-date">14. Jun 2026</div></div>
+          </div>
+          <div class="c-card home-concert-card" data-distance="570" data-exception="true" onclick="go('s-detail-phoebe')">
+            <div class="c-card-img" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/BoygeniusKingstonEarly240823_%2829_of_45%29_%2853138924957%29_Cropped.jpg/250px-BoygeniusKingstonEarly240823_%2829_of_45%29_%2853138924957%29_Cropped.jpg');background-color:#3a1a4a;"></div>
+            <span class="badge badge-eu">Einzige Europa-Show</span>
+            <div class="c-card-body"><div class="c-card-artist">Phoebe Bridgers</div><div class="c-card-venue">Tempodrom, Berlin</div><div class="c-card-date">2. Jul 2026</div></div>
+          </div>
+          <div class="c-card festival home-concert-card" data-distance="95" onclick="go('s-detail-rar')">
+            <div class="c-card-img" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Prodigy-rar-060609--209_%283606459901%29.jpg/250px-Prodigy-rar-060609--209_%283606459901%29.jpg');background-color:#3a2a0a;width:180px;"></div>
+            <span class="badge badge-fest">Festival</span>
+            <div class="c-card-body"><div class="c-card-artist">Rock am Ring</div><div class="c-card-venue">Nürburgring</div><div class="c-card-date">7.–9. Aug 2026</div><div class="c-card-extra">Remi Wolf, Mumford &amp; Sons + 14 weitere</div></div>
+          </div>
+          <div class="c-card sold-out home-concert-card" data-distance="75" onclick="go('s-detail-remi')">
+            <div class="c-card-img" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Florence_and_the_Machine_12_09_2018_-11_%2832834296408%29_%28cropped%29.jpg/250px-Florence_and_the_Machine_12_09_2018_-11_%2832834296408%29_%28cropped%29.jpg');background-color:#1a1a3a;"></div>
+            <span class="badge badge-so">Ausverkauft</span>
+            <div class="c-card-body"><div class="c-card-artist">Florence + The Machine</div><div class="c-card-venue">Lanxess Arena, Köln</div><div class="c-card-date">19. Jun 2026</div></div>
+          </div>
+          <div class="c-card home-concert-card" data-distance="125" onclick="go('s-detail-remi')">
+            <div class="c-card-img" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Mumford_%26_Sons%2C_performing_at_Aviemore%2C_Scotland_2015.jpg/250px-Mumford_%26_Sons%2C_performing_at_Aviemore%2C_Scotland_2015.jpg');background-color:#2a1a0a;"></div>
+            <div class="c-card-body"><div class="c-card-artist">Mumford &amp; Sons</div><div class="c-card-venue">Westfalenhalle, Dortmund</div><div class="c-card-date">5. Jul 2026</div></div>
+          </div>
         </div>
-        <div class="q-item">
-          <div class="q-thumb" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Remi_Wolf_in_2024.png/120px-Remi_Wolf_in_2024.png'); background-color:#1a3a1a;" id="qt-remi">🐺</div>
-          <span>Remi Wolf</span>
+
+        <!-- Notification prompt -->
+        <div id="np">
+          <div class="notif-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+          <div class="notif-body">
+            <p><strong>Benachrichtigungen aktivieren?</strong><br>Wir informieren dich, wenn deine Lieblingskünstler Konzerte in deiner Nähe ankündigen — bevor die Tickets weg sind.</p>
+            <div class="notif-actions">
+              <button class="btn btn-white" onclick="showIOSSheet()">Ja, benachrichtigen</button>
+              <button class="btn btn-outline" onclick="dismissNP()">Nein danke</button>
+            </div>
+          </div>
         </div>
-        <div class="q-item">
-          <div class="q-thumb" style="background-color:#2a1a3a;">🎵</div>
-          <span>Off Campus Playlist</span>
+      </div>
+
+      <!-- Empty state (shown when radius = 50km) -->
+      <div id="empty-nudge">
+        <p><strong>Keine Konzerte in deiner Nähe</strong>Derzeit keine Konzerte deiner Lieblingskünstler innerhalb von <span id="nudge-radius">50</span> km. Möchtest du den Umkreis erweitern?</p>
+        <button class="btn btn-white" onclick="go('s-concerts')" style="font-size:12px;padding:6px 14px;">Umkreis anpassen</button>
+      </div>
+
+      <!-- Empfohlene Sender -->
+      <div class="section">
+        <div class="sec-hdr"><div class="sec-title">Empfohlene Sender</div><a class="sec-link">Alle anzeigen</a></div>
+        <div class="row">
+          <div class="card"><div class="card-art-wrap"><div class="card-art-ci" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Remi_Wolf_in_2024.png/250px-Remi_Wolf_in_2024.png');background-color:#1a3a1a;"></div><span class="radio-badge">RADIO</span></div><div class="card-name">Remi Wolf</div><div class="card-sub">Mit BENEE, Japanese House und mehr</div></div>
+          <div class="card"><div class="card-art-wrap"><div class="card-art-ci" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/BoygeniusKingstonEarly240823_%2829_of_45%29_%2853138924957%29_Cropped.jpg/250px-BoygeniusKingstonEarly240823_%2829_of_45%29_%2853138924957%29_Cropped.jpg');background-color:#3a1a4a;"></div><span class="radio-badge">RADIO</span></div><div class="card-name">Phoebe Bridgers</div><div class="card-sub">Mit Maggie Rogers, Remi Wolf und mehr</div></div>
+          <div class="card"><div class="card-art-wrap"><div class="card-art-ci" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Florence_and_the_Machine_12_09_2018_-11_%2832834296408%29_%28cropped%29.jpg/250px-Florence_and_the_Machine_12_09_2018_-11_%2832834296408%29_%28cropped%29.jpg');background-color:#1a1a3a;"></div><span class="radio-badge">RADIO</span></div><div class="card-name">Florence + The Machine</div><div class="card-sub">Mit The Last Dinner Party und mehr</div></div>
         </div>
-        <div class="q-item">
-          <div class="q-thumb" style="background:#8B4513; font-size:14px; font-weight:700; color:white;">348</div>
-          <span>#348 ALLE ZIEHN'S...</span>
-        </div>
-        <div class="q-item">
-          <div class="q-thumb" style="background-color:#1a1a2a;" id="qt-shindy">🎤</div>
-          <span>Shindy</span>
-        </div>
-        <div class="q-item">
-          <div class="q-thumb" style="background:#2a1a0a;">🎸</div>
-          <span>Fragiler Mann</span>
-        </div>
-        <div class="q-item">
-          <div class="q-thumb" style="background-color:#1a2a1a;" id="qt-luciano">🎤</div>
-          <span>Luciano</span>
+      </div>
+    </div>
+  </div><!-- /s-home -->
+
+
+  <!-- ═══════════════════════════════
+       SCREEN 2 · CONCERTS LIST
+  ═══════════════════════════════ -->
+  <div class="screen" id="s-concerts">
+    <div style="position:sticky;top:0;z-index:100;background:var(--bg);">
+      <div class="pg-hdr">
+        <button class="back-btn" onclick="go('s-home',true)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="pg-title">Konzerte in deiner Nähe</div>
+      </div>
+      <div class="filter-row">
+        <div class="filter-meta" id="filter-meta">6 Konzerte gefunden · 150 km</div>
+        <select class="radius-select" id="radius-select" onchange="updateRadius(this.value)">
+          <option value="50">50 km</option>
+          <option value="100">100 km</option>
+          <option value="150" selected>150 km</option>
+          <option value="200">200 km</option>
+          <option value="300">300 km</option>
+        </select>
+        <div class="toggle-wrap">
+          <span class="toggle-lbl">Ausverkaufte ausblenden</span>
+          <button class="toggle" id="so-toggle" onclick="toggleSO()"></button>
         </div>
       </div>
     </div>
 
-    <!-- Für Alicia -->
-    <div class="section">
-      <div class="sec-hdr">
-        <div><div class="sec-eyebrow">Für</div><div class="sec-title">Alicia</div></div>
-        <a class="sec-link">Alle anzeigen</a>
+    <div style="padding-bottom:16px;" id="concerts-list-body">
+
+      <!-- Diese Woche -->
+      <div class="tg" id="tg-week">
+        <div class="tg-label">Diese Woche</div>
+        <div class="c-row concert-item so-item sold-out" data-distance="75" onclick="go('s-detail-remi')">
+          <div class="c-row-img" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Florence_and_the_Machine_12_09_2018_-11_%2832834296408%29_%28cropped%29.jpg/120px-Florence_and_the_Machine_12_09_2018_-11_%2832834296408%29_%28cropped%29.jpg');background-color:#1a1a3a;"></div>
+          <div class="c-row-info"><div class="c-row-artist">Florence + The Machine</div><div class="c-row-meta">Lanxess Arena · Köln</div><div class="c-row-tag-d">Ausverkauft · Resale verfügbar</div></div>
+          <div class="c-row-right"><div class="c-row-date">14. Jun</div><div class="c-row-price">ab 89 € (Resale)</div></div>
+        </div>
+        <div class="c-row concert-item" data-distance="75" onclick="go('s-detail-remi')">
+          <div class="c-row-img" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Remi_Wolf_in_2024.png/120px-Remi_Wolf_in_2024.png');background-color:#1a3a1a;"></div>
+          <div class="c-row-info"><div class="c-row-artist">Remi Wolf</div><div class="c-row-meta">Palladium · Köln</div></div>
+          <div class="c-row-right"><div class="c-row-date">19. Jun</div><div class="c-row-price">ab 35 €</div></div>
+        </div>
       </div>
-      <div class="row">
-        <div class="card">
-          <div class="card-art-sq" style="background:linear-gradient(135deg,#E91429 0%,#8B2FC9 100%); font-size:0;">
-            <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;">
-              <div style="font-size:11px;font-weight:900;color:white;letter-spacing:.05em;">DEIN MIX</div>
-              <div style="font-size:11px;font-weight:900;color:white;letter-spacing:.05em;">DER WOCHE</div>
-            </div>
-          </div>
-          <div class="card-name">Dein Mix der Woche</div>
-          <div class="card-sub">Kontra K, Shindy, Bushido und mehr</div>
+
+      <div class="divider"></div>
+
+      <!-- Nächster Monat -->
+      <div class="tg" id="tg-month">
+        <div class="tg-label">Nächster Monat</div>
+        <div class="c-row concert-item" data-distance="570" data-exception="true" onclick="go('s-detail-phoebe')">
+          <div class="c-row-img" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/BoygeniusKingstonEarly240823_%2829_of_45%29_%2853138924957%29_Cropped.jpg/120px-BoygeniusKingstonEarly240823_%2829_of_45%29_%2853138924957%29_Cropped.jpg');background-color:#3a1a4a;"></div>
+          <div class="c-row-info"><div class="c-row-artist">Phoebe Bridgers</div><div class="c-row-meta">Tempodrom · Berlin</div><div class="c-row-tag-g">Einzige Europa-Show</div></div>
+          <div class="c-row-right"><div class="c-row-date">2. Jul</div><div class="c-row-price">ab 49 €</div></div>
         </div>
-        <div class="card">
-          <div class="card-art-sq" style="background:linear-gradient(135deg,#00A0D6,#2D46B9);">
-            <div style="width:100%;height:100%;display:flex;align-items:flex-end;padding:8px;">
-              <div style="background:#00cfff;color:#000;font-size:10px;font-weight:900;padding:3px 7px;border-radius:2px;">Dein Mixtape 1</div>
-            </div>
-          </div>
-          <div class="card-name">Dein Mixtape 1</div>
-          <div class="card-sub">capelli, Fabian Römer, OK KID und mehr</div>
+        <div class="c-row concert-item" data-distance="125" onclick="go('s-detail-remi')">
+          <div class="c-row-img" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Mumford_%26_Sons%2C_performing_at_Aviemore%2C_Scotland_2015.jpg/120px-Mumford_%26_Sons%2C_performing_at_Aviemore%2C_Scotland_2015.jpg');background-color:#2a1a0a;"></div>
+          <div class="c-row-info"><div class="c-row-artist">Mumford &amp; Sons</div><div class="c-row-meta">Westfalenhalle · Dortmund</div></div>
+          <div class="c-row-right"><div class="c-row-date">5. Jul</div><div class="c-row-price">ab 55 €</div></div>
         </div>
-        <div class="card">
-          <div class="card-art-sq" style="background:linear-gradient(135deg,#E91429,#FF6B00);">
-            <div style="width:100%;height:100%;display:flex;align-items:flex-end;padding:8px;">
-              <div style="background:#FF6B00;color:#000;font-size:10px;font-weight:900;padding:3px 7px;border-radius:2px;">Dein Mixtape 2</div>
-            </div>
-          </div>
-          <div class="card-name">Dein Mixtape 2</div>
-          <div class="card-sub">Taylor Swift, Lorde, Lana Del Rey und mehr</div>
+        <div class="c-row concert-item so-item sold-out" data-distance="185" onclick="go('s-detail-remi')">
+          <div class="c-row-img" style="background:#1a2a3a;display:flex;align-items:center;justify-content:center;font-size:20px;">🎸</div>
+          <div class="c-row-info"><div class="c-row-artist">The National</div><div class="c-row-meta">Jahrhunderthalle · Frankfurt</div><div class="c-row-tag-d">Ausverkauft · Resale verfügbar</div></div>
+          <div class="c-row-right"><div class="c-row-date">18. Jul</div><div class="c-row-price">ab 120 € (Resale)</div></div>
         </div>
-        <div class="card">
-          <div class="card-art-sq" style="background:linear-gradient(135deg,#cc0000,#222);">
-            <div style="width:100%;height:100%;display:flex;align-items:flex-end;padding:8px;">
-              <div style="background:#cc0000;color:#fff;font-size:10px;font-weight:900;padding:3px 7px;border-radius:2px;">Dein Mixtape 3</div>
-            </div>
-          </div>
-          <div class="card-name">Dein Mixtape 3</div>
-          <div class="card-sub">Eminem, Kanye West, Drake und mehr</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- 6 Monate -->
+      <div class="tg" id="tg-6months">
+        <div class="tg-label">In den nächsten 6 Monaten</div>
+        <div class="c-row concert-item" data-distance="95" onclick="go('s-detail-rar')">
+          <div class="c-row-img" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Prodigy-rar-060609--209_%283606459901%29.jpg/120px-Prodigy-rar-060609--209_%283606459901%29.jpg');background-color:#3a2a0a;"></div>
+          <div class="c-row-info"><div class="c-row-artist">Rock am Ring</div><div class="c-row-meta">Nürburgring · Festival</div><div class="c-row-tag-g">Remi Wolf, Mumford &amp; Sons + 14 weitere</div></div>
+          <div class="c-row-right"><div class="c-row-date">7.–9. Aug</div><div class="c-row-price">ab 199 €</div></div>
         </div>
+        <div class="c-row concert-item" data-distance="75" onclick="go('s-detail-remi')">
+          <div class="c-row-img" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Lorde_Glasto2025-9_%28cropped%29.jpg/120px-Lorde_Glasto2025-9_%28cropped%29.jpg');background-color:#1a3a3a;"></div>
+          <div class="c-row-info"><div class="c-row-artist">Lorde</div><div class="c-row-meta">Lanxess Arena · Köln</div></div>
+          <div class="c-row-right"><div class="c-row-date">22. Sep</div><div class="c-row-price">ab 45 €</div></div>
+        </div>
+        <div class="c-row concert-item" data-distance="320" onclick="go('s-detail-remi')">
+          <div class="c-row-img" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Maggie-Rogers_2019_08_MAIN_PRESS.tif_IMAGE.png/120px-Maggie-Rogers_2019_08_MAIN_PRESS.tif_IMAGE.png');background-color:#2a2a1a;"></div>
+          <div class="c-row-info"><div class="c-row-artist">Maggie Rogers</div><div class="c-row-meta">Kulturpalast · Dresden</div></div>
+          <div class="c-row-right"><div class="c-row-date">8. Okt</div><div class="c-row-price">ab 38 €</div></div>
+        </div>
+        <div class="c-row concert-item" data-distance="240" onclick="go('s-detail-remi')">
+          <div class="c-row-img" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/LanaDRPrimavera310524_%2832_of_147%29_%2853765476960%29_%28cropped%29.jpg/120px-LanaDRPrimavera310524_%2832_of_147%29_%2853765476960%29_%28cropped%29.jpg');background-color:#1a0a2a;"></div>
+          <div class="c-row-info"><div class="c-row-artist">Lana Del Rey</div><div class="c-row-meta">SAP Arena · Mannheim</div></div>
+          <div class="c-row-right"><div class="c-row-date">15. Nov</div><div class="c-row-price">ab 65 €</div></div>
+        </div>
+      </div>
+
+      <!-- Concerts empty state -->
+      <div id="concerts-empty">
+        <p><strong>Keine Konzerte in diesem Umkreis</strong>Erhöhe den Radius oder schau später wieder vorbei.</p>
+      </div>
+
+    </div>
+  </div><!-- /s-concerts -->
+
+
+  <!-- ═══════════════════════════════
+       SCREEN 3 · DETAIL · Remi Wolf
+  ═══════════════════════════════ -->
+  <div class="screen" id="s-detail-remi">
+    <div style="overflow-y:auto;height:100%;">
+      <div class="hero" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Remi_Wolf_in_2024.png/500px-Remi_Wolf_in_2024.png');background-color:#1a3a1a;">
+        <div class="hero-overlay"></div>
+        <button class="hero-back" onclick="go('s-concerts',true)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+      </div>
+      <div class="detail-body">
+        <div class="d-artist">Remi Wolf</div>
+        <div class="d-type">Konzert</div>
+        <div class="d-grid">
+          <div class="d-cell"><div class="d-lbl">Datum</div><div class="d-val">19. Juni 2026</div><div class="d-sub">Fr, 20:00 Uhr</div></div>
+          <div class="d-cell"><div class="d-lbl">Venue</div><div class="d-val">Palladium</div><div class="d-sub">Köln · 75 km entfernt</div></div>
+        </div>
+        <div class="support-block">
+          <div class="support-lbl">Support Acts</div>
+          <div class="support-act"><div class="s-ava" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Benee_Supalonely2_%28cropped%29.png/120px-Benee_Supalonely2_%28cropped%29.png');background-color:#2a3a1a;"></div><div><div class="s-name">BENEE</div><div class="s-role">Support</div></div></div>
+          <div class="support-act"><div class="s-ava" style="background:#2a2a3a;display:flex;align-items:center;justify-content:center;font-size:14px;">🎤</div><div><div class="s-name">Shai Nowell</div><div class="s-role">Support</div></div></div>
+        </div>
+        <div class="map-block"><svg width="18" height="18" viewBox="0 0 24 24" fill="var(--green)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span>Palladium Köln, Schanzenstr. 36</span></div>
+        <div class="price-row"><div class="price-lbl">Ticketpreis</div><div class="price-val">ab 35 €</div></div>
+        <button class="cta">Tickets kaufen</button>
       </div>
     </div>
+  </div><!-- /s-detail-remi -->
 
-    <!-- ✦ KONZERTE ✦ -->
-    <div class="section">
-      <div class="sec-hdr">
-        <div>
-          <div class="sec-title">Konzerte in deiner Nähe</div>
-          <div style="font-size:11px;color:var(--muted);margin-top:2px;">Basierend auf deinen meistgehörten Künstlern · 150 km</div>
-        </div>
-        <a class="sec-link" onclick="go('s-concerts')">Alle anzeigen</a>
+
+  <!-- ═══════════════════════════════
+       SCREEN 4 · DETAIL · Phoebe
+  ═══════════════════════════════ -->
+  <div class="screen" id="s-detail-phoebe">
+    <div style="overflow-y:auto;height:100%;">
+      <div class="hero" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/BoygeniusKingstonEarly240823_%2829_of_45%29_%2853138924957%29_Cropped.jpg/500px-BoygeniusKingstonEarly240823_%2829_of_45%29_%2853138924957%29_Cropped.jpg');background-color:#3a1a4a;">
+        <div class="hero-overlay"></div>
+        <button class="hero-back" onclick="go('s-concerts',true)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
       </div>
-
-      <div class="row">
-
-        <!-- Remi Wolf -->
-        <div class="c-card" onclick="go('s-detail-remi')">
-          <div class="c-card-img" id="ci-remi"
-            style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Remi_Wolf_in_2024.png/250px-Remi_Wolf_in_2024.png');background-color:#1a3a1a;">
-          </div>
-          <div class="c-card-body">
-            <div class="c-card-artist">Remi Wolf</div>
-            <div class="c-card-venue">Palladium, Köln</div>
-            <div class="c-card-date">14. Jun 2026</div>
-          </div>
+      <div class="detail-body">
+        <div class="d-artist">Phoebe Bridgers</div>
+        <div class="d-type"><span>Konzert</span><span class="eu-badge">Einzige Europa-Show</span></div>
+        <div class="eu-notice">Phoebe Bridgers spielt auf dieser Tour nur einen einzigen Termin in Europa. Der nächste Auftritt findet erst wieder in Nordamerika statt.</div>
+        <div class="d-grid">
+          <div class="d-cell"><div class="d-lbl">Datum</div><div class="d-val">2. Juli 2026</div><div class="d-sub">Do, 20:00 Uhr</div></div>
+          <div class="d-cell"><div class="d-lbl">Venue</div><div class="d-val">Tempodrom</div><div class="d-sub">Berlin · 570 km entfernt</div></div>
         </div>
-
-        <!-- Phoebe Bridgers — Europe only -->
-        <div class="c-card" onclick="go('s-detail-phoebe')">
-          <div class="c-card-img"
-            style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/BoygeniusKingstonEarly240823_%2829_of_45%29_%2853138924957%29_Cropped.jpg/250px-BoygeniusKingstonEarly240823_%2829_of_45%29_%2853138924957%29_Cropped.jpg');background-color:#3a1a4a;">
-          </div>
-          <span class="badge badge-eu">Einzige Europa-Show</span>
-          <div class="c-card-body">
-            <div class="c-card-artist">Phoebe Bridgers</div>
-            <div class="c-card-venue">Tempodrom, Berlin</div>
-            <div class="c-card-date">2. Jul 2026</div>
-          </div>
+        <div class="support-block">
+          <div class="support-lbl">Support Acts</div>
+          <div class="support-act"><div class="s-ava" style="background:#2a1a3a;display:flex;align-items:center;justify-content:center;font-size:14px;">🎸</div><div><div class="s-name">boygenius</div><div class="s-role">Support</div></div></div>
         </div>
-
-        <!-- Rock am Ring festival -->
-        <div class="c-card festival" onclick="go('s-detail-remi')">
-          <div class="c-card-img"
-            style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Prodigy-rar-060609--209_%283606459901%29.jpg/250px-Prodigy-rar-060609--209_%283606459901%29.jpg');background-color:#3a2a0a;background-size:cover;background-position:center;width:180px;"></div>
-          <span class="badge badge-fest">Festival</span>
-          <div class="c-card-body">
-            <div class="c-card-artist">Rock am Ring</div>
-            <div class="c-card-venue">Nürburgring</div>
-            <div class="c-card-date">7.–9. Aug 2026</div>
-            <div class="c-card-extra">Remi Wolf, Mumford &amp; Sons + 14 weitere</div>
-          </div>
-        </div>
-
-        <!-- Florence sold out -->
-        <div class="c-card sold-out" onclick="go('s-detail-remi')">
-          <div class="c-card-img"
-            style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Florence_and_the_Machine_12_09_2018_-11_%2832834296408%29_%28cropped%29.jpg/250px-Florence_and_the_Machine_12_09_2018_-11_%2832834296408%29_%28cropped%29.jpg');background-color:#1a1a3a;">
-          </div>
-          <span class="badge badge-so">Ausverkauft</span>
-          <div class="c-card-body">
-            <div class="c-card-artist">Florence + The Machine</div>
-            <div class="c-card-venue">Lanxess Arena, Köln</div>
-            <div class="c-card-date">19. Jun 2026</div>
-          </div>
-        </div>
-
-        <!-- Mumford & Sons -->
-        <div class="c-card" onclick="go('s-detail-remi')">
-          <div class="c-card-img"
-            style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Mumford_%26_Sons%2C_performing_at_Aviemore%2C_Scotland_2015.jpg/250px-Mumford_%26_Sons%2C_performing_at_Aviemore%2C_Scotland_2015.jpg');background-color:#2a1a0a;">
-          </div>
-          <div class="c-card-body">
-            <div class="c-card-artist">Mumford &amp; Sons</div>
-            <div class="c-card-venue">Westfalenhalle, Dortmund</div>
-            <div class="c-card-date">5. Jul 2026</div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Notification prompt -->
-      <div class="notif-prompt" id="np">
-        <div class="notif-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        </div>
-        <div class="notif-body">
-          <p><strong>Benachrichtigungen aktivieren?</strong><br>
-          Wir informieren dich, wenn deine Lieblingskünstler Konzerte in deiner Nähe ankündigen — bevor die Tickets weg sind.</p>
-          <div class="notif-actions">
-            <button class="btn btn-white" onclick="dismissNP()">Ja, benachrichtigen</button>
-            <button class="btn btn-outline" onclick="dismissNP()">Nein danke</button>
-          </div>
-        </div>
+        <div class="map-block"><svg width="18" height="18" viewBox="0 0 24 24" fill="var(--green)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span>Tempodrom Berlin, Möckernstr. 10</span></div>
+        <div class="price-row"><div class="price-lbl">Ticketpreis</div><div class="price-val">ab 49 €</div></div>
+        <button class="cta">Tickets kaufen</button>
       </div>
     </div>
+  </div><!-- /s-detail-phoebe -->
 
-    <!-- Empfohlene Sender -->
-    <div class="section">
-      <div class="sec-hdr">
-        <div class="sec-title">Empfohlene Sender</div>
-        <a class="sec-link">Alle anzeigen</a>
+
+  <!-- ═══════════════════════════════
+       SCREEN 5 · DETAIL · Rock am Ring
+  ═══════════════════════════════ -->
+  <div class="screen" id="s-detail-rar">
+    <div style="overflow-y:auto;height:100%;">
+      <div class="hero" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Prodigy-rar-060609--209_%283606459901%29.jpg/500px-Prodigy-rar-060609--209_%283606459901%29.jpg');background-color:#3a2a0a;">
+        <div class="hero-overlay"></div>
+        <button class="hero-back" onclick="go('s-concerts',true)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
       </div>
-      <div class="row">
-        <div class="card">
-          <div class="card-art-wrap">
-            <div class="card-art-ci"
-              style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Remi_Wolf_in_2024.png/250px-Remi_Wolf_in_2024.png');background-color:#1a3a1a;">
-            </div>
-            <span class="radio-badge">RADIO</span>
-          </div>
-          <div class="card-name">Remi Wolf</div>
-          <div class="card-sub">Mit BENEE, Japanese House und mehr</div>
+      <div class="detail-body">
+        <div class="d-artist">Rock am Ring</div>
+        <div class="d-type">Festival</div>
+        <div class="d-grid">
+          <div class="d-cell"><div class="d-lbl">Datum</div><div class="d-val">7.–9. Aug 2026</div><div class="d-sub">Fr–So, 3 Tage</div></div>
+          <div class="d-cell"><div class="d-lbl">Venue</div><div class="d-val">Nürburgring</div><div class="d-sub">Nürburg · 95 km entfernt</div></div>
         </div>
-        <div class="card">
-          <div class="card-art-wrap">
-            <div class="card-art-ci"
-              style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/BoygeniusKingstonEarly240823_%2829_of_45%29_%2853138924957%29_Cropped.jpg/250px-BoygeniusKingstonEarly240823_%2829_of_45%29_%2853138924957%29_Cropped.jpg');background-color:#3a1a4a;">
-            </div>
-            <span class="radio-badge">RADIO</span>
+        <div class="fest-artists">
+          <div class="fest-artists-lbl">Deine Künstler sind dabei</div>
+          <div class="fest-artist-row">
+            <div class="s-ava" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Remi_Wolf_in_2024.png/120px-Remi_Wolf_in_2024.png');background-color:#1a3a1a;"></div>
+            <div><div class="s-name">Remi Wolf</div><div class="s-role">Samstag · Hauptbühne</div></div>
           </div>
-          <div class="card-name">Phoebe Bridgers</div>
-          <div class="card-sub">Mit Maggie Rogers, Remi Wolf und mehr</div>
-        </div>
-        <div class="card">
-          <div class="card-art-wrap">
-            <div class="card-art-ci"
-              style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Florence_and_the_Machine_12_09_2018_-11_%2832834296408%29_%28cropped%29.jpg/250px-Florence_and_the_Machine_12_09_2018_-11_%2832834296408%29_%28cropped%29.jpg');background-color:#1a1a3a;">
-            </div>
-            <span class="radio-badge">RADIO</span>
+          <div class="fest-artist-row">
+            <div class="s-ava" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Mumford_%26_Sons%2C_performing_at_Aviemore%2C_Scotland_2015.jpg/120px-Mumford_%26_Sons%2C_performing_at_Aviemore%2C_Scotland_2015.jpg');background-color:#2a1a0a;"></div>
+            <div><div class="s-name">Mumford &amp; Sons</div><div class="s-role">Sonntag · Hauptbühne</div></div>
           </div>
-          <div class="card-name">Florence + The Machine</div>
-          <div class="card-sub">Mit The Last Dinner Party und mehr</div>
+          <div class="fest-more">+ 14 weitere Acts im Line-up</div>
         </div>
-        <div class="card">
-          <div class="card-art-wrap">
-            <div class="card-art-ci"
-              style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Mumford_%26_Sons%2C_performing_at_Aviemore%2C_Scotland_2015.jpg/250px-Mumford_%26_Sons%2C_performing_at_Aviemore%2C_Scotland_2015.jpg');background-color:#2a1a0a;">
-            </div>
-            <span class="radio-badge">RADIO</span>
-          </div>
-          <div class="card-name">Mumford &amp; Sons</div>
-          <div class="card-sub">Mit Ben Howard, Caamp und mehr</div>
-        </div>
+        <div class="map-block"><svg width="18" height="18" viewBox="0 0 24 24" fill="var(--green)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span>Nürburgring, 53520 Nürburg</span></div>
+        <div class="price-row"><div class="price-lbl">Festivalticket (3 Tage)</div><div class="price-val">ab 199 €</div></div>
+        <button class="cta">Tickets kaufen</button>
       </div>
     </div>
+  </div><!-- /s-detail-rar -->
 
-  </div>
+  </div><!-- /phone-content -->
 
+  <!-- Shared bottom nav -->
   <div class="bnav">
     <div class="bnav-item on">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -621,238 +814,31 @@
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
       <span>Bibliothek</span>
     </div>
+    <div class="bnav-indicator"></div>
   </div>
-</div>
 
-
-<!-- ══════════════════════════════════════
-     SCREEN 2 · ALL CONCERTS
-══════════════════════════════════════ -->
-<div class="screen" id="s-concerts">
-
-  <div style="position:sticky;top:0;z-index:100;background:var(--bg);">
-    <div class="pg-hdr">
-      <button class="back-btn" onclick="go('s-home')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-      </button>
-      <div class="pg-title">Konzerte in deiner Nähe</div>
-    </div>
-    <div class="filter-row">
-      <div class="filter-meta" id="filter-meta">12 Konzerte gefunden</div>
-      <select class="radius-select" onchange="updateRadius(this.value)">
-        <option value="50">50 km</option>
-        <option value="100">100 km</option>
-        <option value="150" selected>150 km</option>
-        <option value="200">200 km</option>
-        <option value="300">300 km</option>
-      </select>
-      <div class="toggle-wrap">
-        <span class="toggle-lbl">Ausverkaufte ausblenden</span>
-        <button class="toggle" id="so-toggle" onclick="toggleSO()"></button>
+  <!-- iOS permission overlay -->
+  <div class="ios-overlay" id="ios-overlay">
+    <div class="ios-alert">
+      <div class="ios-alert-header">
+        <div class="ios-alert-icon">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+        </div>
+        <p class="ios-alert-title">"Spotify" möchte dir Mitteilungen senden</p>
+        <p class="ios-alert-body">Mitteilungen können Hinweise, Töne und Symbole auf dem Badge der App beinhalten. Diese können in den Einstellungen konfiguriert werden.</p>
+      </div>
+      <div>
+        <button class="ios-alert-btn" onclick="dismissIOSSheet()">Nicht erlauben</button>
+        <button class="ios-alert-btn ios-allow" onclick="dismissIOSSheet()">Erlauben</button>
       </div>
     </div>
   </div>
 
-  <div style="flex:1;overflow-y:auto;padding-bottom:100px;">
-
-    <div class="tg">
-      <div class="tg-label">Diese Woche</div>
-      <div class="c-row" onclick="go('s-detail-remi')">
-        <div class="c-row-img" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Remi_Wolf_in_2024.png/120px-Remi_Wolf_in_2024.png');background-color:#1a3a1a;"></div>
-        <div class="c-row-info">
-          <div class="c-row-artist">Remi Wolf</div>
-          <div class="c-row-meta">Palladium · Köln</div>
-        </div>
-        <div class="c-row-right"><div class="c-row-date">14. Jun</div><div class="c-row-price">ab 35 €</div></div>
-      </div>
-      <div class="c-row sold-out so-item" onclick="go('s-detail-remi')">
-        <div class="c-row-img" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Florence_and_the_Machine_12_09_2018_-11_%2832834296408%29_%28cropped%29.jpg/120px-Florence_and_the_Machine_12_09_2018_-11_%2832834296408%29_%28cropped%29.jpg');background-color:#1a1a3a;"></div>
-        <div class="c-row-info">
-          <div class="c-row-artist">Florence + The Machine</div>
-          <div class="c-row-meta">Lanxess Arena · Köln</div>
-          <div class="c-row-tag-d">Ausverkauft · Resale verfügbar</div>
-        </div>
-        <div class="c-row-right"><div class="c-row-date">19. Jun</div><div class="c-row-price">ab 89 € (Resale)</div></div>
-      </div>
-    </div>
-
-    <div class="divider"></div>
-
-    <div class="tg">
-      <div class="tg-label">Nächster Monat</div>
-      <div class="c-row" onclick="go('s-detail-phoebe')">
-        <div class="c-row-img" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/BoygeniusKingstonEarly240823_%2829_of_45%29_%2853138924957%29_Cropped.jpg/120px-BoygeniusKingstonEarly240823_%2829_of_45%29_%2853138924957%29_Cropped.jpg');background-color:#3a1a4a;"></div>
-        <div class="c-row-info">
-          <div class="c-row-artist">Phoebe Bridgers</div>
-          <div class="c-row-meta">Tempodrom · Berlin</div>
-          <div class="c-row-tag-g">Einzige Europa-Show</div>
-        </div>
-        <div class="c-row-right"><div class="c-row-date">2. Jul</div><div class="c-row-price">ab 49 €</div></div>
-      </div>
-      <div class="c-row" onclick="go('s-detail-remi')">
-        <div class="c-row-img" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Mumford_%26_Sons%2C_performing_at_Aviemore%2C_Scotland_2015.jpg/120px-Mumford_%26_Sons%2C_performing_at_Aviemore%2C_Scotland_2015.jpg');background-color:#2a1a0a;"></div>
-        <div class="c-row-info">
-          <div class="c-row-artist">Mumford &amp; Sons</div>
-          <div class="c-row-meta">Westfalenhalle · Dortmund</div>
-        </div>
-        <div class="c-row-right"><div class="c-row-date">5. Jul</div><div class="c-row-price">ab 55 €</div></div>
-      </div>
-      <div class="c-row sold-out so-item" onclick="go('s-detail-remi')">
-        <div class="c-row-img" style="background:#1a2a3a;font-size:20px;display:flex;align-items:center;justify-content:center;">🎸</div>
-        <div class="c-row-info">
-          <div class="c-row-artist">The National</div>
-          <div class="c-row-meta">Jahrhunderthalle · Frankfurt</div>
-          <div class="c-row-tag-d">Ausverkauft · Resale verfügbar</div>
-        </div>
-        <div class="c-row-right"><div class="c-row-date">18. Jul</div><div class="c-row-price">ab 120 € (Resale)</div></div>
-      </div>
-    </div>
-
-    <div class="divider"></div>
-
-    <div class="tg">
-      <div class="tg-label">In den nächsten 6 Monaten</div>
-      <div class="c-row" onclick="go('s-detail-remi')">
-        <div class="c-row-img" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Prodigy-rar-060609--209_%283606459901%29.jpg/120px-Prodigy-rar-060609--209_%283606459901%29.jpg');background-color:#3a2a0a;background-size:cover;background-position:center;"></div>
-        <div class="c-row-info">
-          <div class="c-row-artist">Rock am Ring</div>
-          <div class="c-row-meta">Nürburgring · Festival</div>
-          <div class="c-row-tag-g">Remi Wolf, Mumford &amp; Sons + 14 weitere</div>
-        </div>
-        <div class="c-row-right"><div class="c-row-date">7.–9. Aug</div><div class="c-row-price">ab 199 €</div></div>
-      </div>
-      <div class="c-row" onclick="go('s-detail-remi')">
-        <div class="c-row-img" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Lorde_Glasto2025-9_%28cropped%29.jpg/120px-Lorde_Glasto2025-9_%28cropped%29.jpg');background-color:#1a3a3a;"></div>
-        <div class="c-row-info">
-          <div class="c-row-artist">Lorde</div>
-          <div class="c-row-meta">Lanxess Arena · Köln</div>
-        </div>
-        <div class="c-row-right"><div class="c-row-date">22. Sep</div><div class="c-row-price">ab 45 €</div></div>
-      </div>
-      <div class="c-row" onclick="go('s-detail-remi')">
-        <div class="c-row-img" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Maggie-Rogers_2019_08_MAIN_PRESS.tif_IMAGE.png/120px-Maggie-Rogers_2019_08_MAIN_PRESS.tif_IMAGE.png');background-color:#2a2a1a;"></div>
-        <div class="c-row-info">
-          <div class="c-row-artist">Maggie Rogers</div>
-          <div class="c-row-meta">Huxleys Neue Welt · Berlin</div>
-        </div>
-        <div class="c-row-right"><div class="c-row-date">8. Okt</div><div class="c-row-price">ab 38 €</div></div>
-      </div>
-      <div class="c-row" onclick="go('s-detail-remi')">
-        <div class="c-row-img" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/LanaDRPrimavera310524_%2832_of_147%29_%2853765476960%29_%28cropped%29.jpg/120px-LanaDRPrimavera310524_%2832_of_147%29_%2853765476960%29_%28cropped%29.jpg');background-color:#1a0a2a;"></div>
-        <div class="c-row-info">
-          <div class="c-row-artist">Lana Del Rey</div>
-          <div class="c-row-meta">Barclays Arena · Hamburg</div>
-        </div>
-        <div class="c-row-right"><div class="c-row-date">15. Nov</div><div class="c-row-price">ab 65 €</div></div>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="bnav">
-    <div class="bnav-item on"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></div>
-    <div class="bnav-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>Suche</span></div>
-    <div class="bnav-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg><span>Bibliothek</span></div>
-  </div>
-</div>
-
-
-<!-- ══════════════════════════════════════
-     SCREEN 3 · DETAIL · Remi Wolf
-══════════════════════════════════════ -->
-<div class="screen" id="s-detail-remi">
-  <div style="flex:1;overflow-y:auto;padding-bottom:80px;">
-    <div class="hero"
-      style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Remi_Wolf_in_2024.png/500px-Remi_Wolf_in_2024.png');background-color:#1a3a1a;">
-      <div class="hero-overlay"></div>
-      <button class="hero-back" onclick="go('s-concerts')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-      </button>
-    </div>
-    <div class="detail-body">
-      <div class="d-artist">Remi Wolf</div>
-      <div class="d-type">Konzert</div>
-      <div class="d-grid">
-        <div class="d-cell"><div class="d-lbl">Datum</div><div class="d-val">14. Juni 2026</div><div class="d-sub">So, 20:00 Uhr</div></div>
-        <div class="d-cell"><div class="d-lbl">Venue</div><div class="d-val">Palladium</div><div class="d-sub">Köln · 120 km entfernt</div></div>
-      </div>
-      <div class="support-block">
-        <div class="support-lbl">Support Acts</div>
-        <div class="support-act">
-          <div class="s-ava" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Benee_Supalonely2_%28cropped%29.png/120px-Benee_Supalonely2_%28cropped%29.png');background-color:#2a3a1a;"></div>
-          <div><div class="s-name">BENEE</div><div class="s-role">Support</div></div>
-        </div>
-        <div class="support-act">
-          <div class="s-ava" style="background:#2a2a3a;font-size:14px;display:flex;align-items:center;justify-content:center;">🎤</div>
-          <div><div class="s-name">Shai Nowell</div><div class="s-role">Support</div></div>
-        </div>
-      </div>
-      <div class="map-block">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--green)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-        <span>Palladium Köln, Schanzenstr. 36</span>
-      </div>
-      <div class="price-row"><div class="price-lbl">Ticketpreis</div><div class="price-val">ab 35 €</div></div>
-      <button class="cta">Tickets kaufen</button>
-    </div>
-  </div>
-  <div class="bnav">
-    <div class="bnav-item on"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></div>
-    <div class="bnav-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>Suche</span></div>
-    <div class="bnav-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg><span>Bibliothek</span></div>
-  </div>
-</div>
-
-
-<!-- ══════════════════════════════════════
-     SCREEN 4 · DETAIL · Phoebe Bridgers
-══════════════════════════════════════ -->
-<div class="screen" id="s-detail-phoebe">
-  <div style="flex:1;overflow-y:auto;padding-bottom:80px;">
-    <div class="hero"
-      style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/BoygeniusKingstonEarly240823_%2829_of_45%29_%2853138924957%29_Cropped.jpg/500px-BoygeniusKingstonEarly240823_%2829_of_45%29_%2853138924957%29_Cropped.jpg');background-color:#3a1a4a;">
-      <div class="hero-overlay"></div>
-      <button class="hero-back" onclick="go('s-concerts')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-      </button>
-    </div>
-    <div class="detail-body">
-      <div class="d-artist">Phoebe Bridgers</div>
-      <div class="d-type">
-        <span>Konzert</span>
-        <span class="eu-badge">Einzige Europa-Show</span>
-      </div>
-      <div class="eu-notice">
-        Phoebe Bridgers spielt auf dieser Tour nur einen einzigen Termin in Europa. Der nächste Auftritt findet erst wieder in Nordamerika statt.
-      </div>
-      <div class="d-grid">
-        <div class="d-cell"><div class="d-lbl">Datum</div><div class="d-val">2. Juli 2026</div><div class="d-sub">Do, 20:00 Uhr</div></div>
-        <div class="d-cell"><div class="d-lbl">Venue</div><div class="d-val">Tempodrom</div><div class="d-sub">Berlin · 280 km entfernt</div></div>
-      </div>
-      <div class="support-block">
-        <div class="support-lbl">Support Acts</div>
-        <div class="support-act">
-          <div class="s-ava" style="background:#2a1a3a;font-size:14px;display:flex;align-items:center;justify-content:center;">🎸</div>
-          <div><div class="s-name">boygenius</div><div class="s-role">Support</div></div>
-        </div>
-      </div>
-      <div class="map-block">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--green)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-        <span>Tempodrom Berlin, Möckernstr. 10</span>
-      </div>
-      <div class="price-row"><div class="price-lbl">Ticketpreis</div><div class="price-val">ab 49 €</div></div>
-      <button class="cta">Tickets kaufen</button>
-    </div>
-  </div>
-  <div class="bnav">
-    <div class="bnav-item on"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></div>
-    <div class="bnav-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>Suche</span></div>
-    <div class="bnav-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg><span>Bibliothek</span></div>
-  </div>
-</div>
-
+</div><!-- /phone -->
+</div><!-- /phone-wrap -->
 
 <script>
-  // ── Verified Wikimedia image URLs (fetched from Wikipedia REST API) ──
+  // ── Image URLs ──────────────────────────────────────────────
   const W = 'https://upload.wikimedia.org/wikipedia/commons/thumb/';
   const IMGS = {
     remi:     W + '0/01/Remi_Wolf_in_2024.png/{s}px-Remi_Wolf_in_2024.png',
@@ -862,48 +848,158 @@
     lorde:    W + '3/30/Lorde_Glasto2025-9_%28cropped%29.jpg/{s}px-Lorde_Glasto2025-9_%28cropped%29.jpg',
     maggie:   W + 'e/e0/Maggie-Rogers_2019_08_MAIN_PRESS.tif_IMAGE.png/{s}px-Maggie-Rogers_2019_08_MAIN_PRESS.tif_IMAGE.png',
     lana:     W + 'd/d0/LanaDRPrimavera310524_%2832_of_147%29_%2853765476960%29_%28cropped%29.jpg/{s}px-LanaDRPrimavera310524_%2832_of_147%29_%2853765476960%29_%28cropped%29.jpg',
-    national: W + '6/64/PrimaveraBarcW1Jun22_%28104_of_318%29_%2852163773566%29.jpg/{s}px-PrimaveraBarcW1Jun22_%28104_of_318%29_%2852163773566%29.jpg',
     benee:    W + '2/2a/Benee_Supalonely2_%28cropped%29.png/{s}px-Benee_Supalonely2_%28cropped%29.png',
   };
 
-  function img(key, size) {
-    return IMGS[key] ? IMGS[key].replace(/{s}/g, size) : '';
+  // ── Navigation ──────────────────────────────────────────────
+  let isTransitioning = false;
+  const DURATION = 280;
+
+  function go(toId, back = false) {
+    if (isTransitioning) return;
+    const fromEl = document.querySelector('.screen.active');
+    const toEl   = document.getElementById(toId);
+    if (!fromEl || fromEl === toEl) return;
+
+    isTransitioning = true;
+    const ease = `cubic-bezier(0.25,0.46,0.45,0.94)`;
+
+    toEl.style.transition = 'none';
+    toEl.style.transform  = back ? 'translateX(-30%)' : 'translateX(100%)';
+    toEl.classList.add('active');
+    // reset scroll on incoming screen
+    const scrollable = toEl.querySelector('[style*="overflow-y"]') || toEl;
+    scrollable.scrollTop = 0;
+
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      toEl.style.transition  = `transform ${DURATION}ms ${ease}`;
+      toEl.style.transform   = 'translateX(0)';
+      fromEl.style.transition = `transform ${DURATION}ms ${ease}`;
+      fromEl.style.transform  = back ? 'translateX(100%)' : 'translateX(-30%)';
+
+      setTimeout(() => {
+        fromEl.classList.remove('active');
+        fromEl.style.transform  = '';
+        fromEl.style.transition = '';
+        toEl.style.transform    = '';
+        toEl.style.transition   = '';
+        isTransitioning = false;
+      }, DURATION + 20);
+    }));
   }
 
+  // ── Concerts row animated entry ─────────────────────────────
   document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('[data-img]').forEach(el => {
-      const [key, size] = el.dataset.img.split(':');
-      const url = img(key, size || 320);
-      if (url) el.style.backgroundImage = `url('${url}')`;
-    });
+    setTimeout(() => {
+      document.getElementById('concerts-section').classList.add('visible');
+      setTimeout(() => {
+        document.getElementById('np').classList.add('visible');
+      }, 700);
+    }, 1500);
   });
 
-  function go(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    window.scrollTo(0,0);
-  }
-
+  // ── Notification prompt ─────────────────────────────────────
   function dismissNP() {
     const el = document.getElementById('np');
-    el.style.transition = 'opacity .3s';
+    el.classList.remove('visible');
     el.style.opacity = '0';
-    setTimeout(() => el.style.display = 'none', 320);
+    el.style.transform = 'translateY(4px)';
+    setTimeout(() => el.style.display = 'none', 350);
   }
 
+  function showIOSSheet() {
+    dismissNP();
+    setTimeout(() => {
+      document.getElementById('ios-overlay').classList.add('show');
+    }, 200);
+  }
+
+  function dismissIOSSheet() {
+    const overlay = document.getElementById('ios-overlay');
+    overlay.classList.remove('show');
+  }
+
+  // ── Sold-out toggle ─────────────────────────────────────────
   let soHidden = false;
   function toggleSO() {
     soHidden = !soHidden;
     document.getElementById('so-toggle').classList.toggle('on', soHidden);
     document.querySelectorAll('.so-item').forEach(el => {
-      el.style.display = soHidden ? 'none' : 'flex';
+      el.style.display = soHidden ? 'none' : '';
     });
+    updateGroupVisibility();
   }
+
+  // ── Radius filtering ────────────────────────────────────────
+  let currentRadius = 150;
 
   function updateRadius(val) {
-    document.getElementById('filter-meta').textContent = val + ' km Umkreis · 12 Konzerte gefunden';
+    currentRadius = parseInt(val);
+    applyRadiusFilter();
+  }
+
+  function applyRadiusFilter() {
+    const r = currentRadius;
+    let visible = 0;
+
+    // Filter concert list rows
+    document.querySelectorAll('.concert-item').forEach(el => {
+      const dist = parseInt(el.dataset.distance || 0);
+      const isException = el.dataset.exception === 'true';
+      const inRadius = isException ? r >= 150 : dist <= r;
+      const soFiltered = soHidden && el.classList.contains('so-item');
+      el.style.display = (inRadius && !soFiltered) ? '' : 'none';
+      if (inRadius) visible++;
+    });
+
+    updateGroupVisibility();
+
+    // Meta text
+    const meta = document.getElementById('filter-meta');
+    if (meta) meta.textContent = `${visible} Konzert${visible !== 1 ? 'e' : ''} gefunden · ${r} km`;
+
+    // Concerts page empty state
+    const concEmpty = document.getElementById('concerts-empty');
+    if (concEmpty) concEmpty.style.display = visible === 0 ? 'block' : 'none';
+
+    // Home screen cards
+    document.querySelectorAll('.home-concert-card').forEach(el => {
+      const dist = parseInt(el.dataset.distance || 0);
+      const isException = el.dataset.exception === 'true';
+      el.style.display = (isException ? r >= 150 : dist <= r) ? '' : 'none';
+    });
+
+    // Home radius subtitle
+    const homeSub = document.getElementById('home-radius-sub');
+    if (homeSub) homeSub.textContent = `Basierend auf deinen meistgehörten Künstlern · ${r} km`;
+
+    // Home empty state
+    const section = document.getElementById('concerts-section');
+    const nudge   = document.getElementById('empty-nudge');
+    const nudgeRadius = document.getElementById('nudge-radius');
+    if (nudgeRadius) nudgeRadius.textContent = r;
+
+    if (visible === 0) {
+      if (section) { section.style.opacity = '0'; section.style.transform = 'translateY(8px)'; setTimeout(() => { section.style.display = 'none'; }, 320); }
+      if (nudge)   { nudge.style.display = 'flex'; nudge.style.flexDirection = 'column'; setTimeout(() => nudge.classList.add('visible'), 10); }
+    } else {
+      if (section) { section.style.display = ''; setTimeout(() => { section.style.opacity = '1'; section.style.transform = 'translateY(0)'; }, 10); }
+      if (nudge)   { nudge.classList.remove('visible'); setTimeout(() => { nudge.style.display = 'none'; }, 380); }
+    }
+  }
+
+  function updateGroupVisibility() {
+    document.querySelectorAll('.tg').forEach(group => {
+      const rows = group.querySelectorAll('.concert-item');
+      const anyVisible = Array.from(rows).some(r => r.style.display !== 'none');
+      group.style.display = anyVisible ? '' : 'none';
+    });
+    // hide orphan dividers
+    document.querySelectorAll('#concerts-list-body .divider').forEach(div => {
+      const next = div.nextElementSibling;
+      div.style.display = (next && next.style.display !== 'none') ? '' : 'none';
+    });
   }
 </script>
-
 </body>
 </html>
